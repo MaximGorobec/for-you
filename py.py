@@ -39,7 +39,6 @@ class Board:
             self.on_click(cell)
 
     def on_click(self, cell):
-        print((self.board[cell[0]][cell[1]] + 1) % 3)
         self.board[cell[0]][cell[1]] = (self.board[cell[0]][cell[1]] + 1) % 3
 
 if __name__ == '__main__':
