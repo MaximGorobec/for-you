@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03bd27fa-26c8-4505-bd61-9651dccdbbe6" name="Changes" comment="исправлены отрицательные корды">
+    <list default="true" id="03bd27fa-26c8-4505-bd61-9651dccdbbe6" name="Changes" comment="Реакция на события от мышиф">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/reaktion_on_triger.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +34,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.main.executor": "Run",
+    "Python.py.executor": "Run",
     "Python.reaktion_on_triger.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -65,11 +65,29 @@
       <option name="project" value="LOCAL" />
       <updated>1734190713628</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Реакция на события от мыши">
+      <option name="closed" value="true" />
+      <created>1734191696007</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1734191696007</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Реакция на события от мышиф">
+      <option name="closed" value="true" />
+      <created>1734191992492</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1734191992492</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="исправлены отрицательные корды" />
-    <option name="LAST_COMMIT_MESSAGE" value="исправлены отрицательные корды" />
+    <MESSAGE value="Реакция на события от мыши" />
+    <MESSAGE value="Реакция на события от мышиф" />
+    <option name="LAST_COMMIT_MESSAGE" value="Реакция на события от мышиф" />
   </component>
 </project>
