@@ -6,7 +6,7 @@ class Board:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.board = [[randint(1,2) for i in range(height)] for _ in range(width)]
+        self.board = [[randint(1,2) for n in range(height)] for _ in range(width)]
         # значения по умолчанию
         self.left = 20
         self.top = 50
@@ -51,7 +51,8 @@ if __name__ == '__main__':
     pygame.display.set_caption('Движущийся круг 2')
     size = width, height = 800, 400
     screen = pygame.display.set_mode(size)
-    board = Board(5, 5)
+    n = int(input())
+    board = Board(n, n)
     running = True
     while running:
         for event in pygame.event.get():
