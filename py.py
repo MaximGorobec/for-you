@@ -9,7 +9,8 @@ class Board:
         # значения по умолчанию
         self.left = 20
         self.top = 50
-        self.cell_size = 30
+        self.cell_size = 20
+        self.t = 1
 
     # настройка внешнего вида
     def set_view(self, left, top, cell_size):
@@ -19,15 +20,14 @@ class Board:
     def render(self, screen):
         for y in range(self.height):
             for x in range(self.width):
-                r = 99
-                if self.board[x][y] == 0:
-                    r = 1
-                    c = Color('white')
-                elif self.board[x][y] == 1:
-                    c = Color('Red')
-                else:
-                    c = Color('Blue')
-                pygame.draw.rect(screen, c, (x * self.cell_size + self.left, y * self.cell_size + self.top, self.cell_size, self.cell_size), r)
+                pygame.draw.rect(screen, Color('white'), (x * self.cell_size + self.left, y * self.cell_size + self.top, self.cell_size, self.cell_size), 1)
+                if self.board[x][y] == 1:
+                    pygame.draw.circle(screen, Color('red'), (x * self.cell_size + self.left + self.cell_size // 2, y * self.cell_size + self.top + self.cell_size // 2), self.cell_size // 2 - 2, 2)
+                elif self.board[x][y] == 2:
+                    pygame.draw.line(screen, Color('blue'), (x * self.cell_size + self.left + 2, y * self.cell_size + self.top + 2), ((x + 1) * self.cell_size + self.left, (y + 1) * self.cell_size + self.top), 2)
+                    pygame.draw.line(screen, Color('blue'), ((x + 1) * self.cell_size + self.left - 2, y * self.cell_size + self.top + 2), (x * self.cell_size + self.left + 2, (y + 1) * self.cell_size + self.top - 2), 2)
+
+
     def get_cell(self, mouse_pos):
         pos = ((mouse_pos[0] - self.left) // self.cell_size, (mouse_pos[1] - self.top) // self.cell_size)
         if 0 <= pos[0] <= self.width - 1 and 0 <=  pos[1] <= self.height - 1:
@@ -39,7 +39,9 @@ class Board:
             self.on_click(cell)
 
     def on_click(self, cell):
-        self.board[cell[0]][cell[1]] = (self.board[cell[0]][cell[1]] + 1) % 3
+        if self.board[cell[0]][cell[1]] == 0:
+            self.board[cell[0]][cell[1]] = self.t
+        self.t = 1 if self.t == 2 else 2
 
 if __name__ == '__main__':
     pygame.init()
