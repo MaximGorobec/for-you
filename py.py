@@ -1,11 +1,12 @@
 import pygame
 from pygame import Color
+from random import randint
 class Board:
     # создание поля
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.board = [[0] * height for _ in range(width)]
+        self.board = [[randint(1,2) for i in range(height)] for _ in range(width)]
         # значения по умолчанию
         self.left = 20
         self.top = 50
@@ -22,10 +23,9 @@ class Board:
             for x in range(self.width):
                 pygame.draw.rect(screen, Color('white'), (x * self.cell_size + self.left, y * self.cell_size + self.top, self.cell_size, self.cell_size), 1)
                 if self.board[x][y] == 1:
-                    pygame.draw.circle(screen, Color('red'), (x * self.cell_size + self.left + self.cell_size // 2, y * self.cell_size + self.top + self.cell_size // 2), self.cell_size // 2 - 2, 2)
+                    pygame.draw.circle(screen, Color('red'), (x * self.cell_size + self.left + self.cell_size // 2, y * self.cell_size + self.top + self.cell_size // 2), self.cell_size // 2 - 2)
                 elif self.board[x][y] == 2:
-                    pygame.draw.line(screen, Color('blue'), (x * self.cell_size + self.left + 2, y * self.cell_size + self.top + 2), ((x + 1) * self.cell_size + self.left, (y + 1) * self.cell_size + self.top), 2)
-                    pygame.draw.line(screen, Color('blue'), ((x + 1) * self.cell_size + self.left - 2, y * self.cell_size + self.top + 2), (x * self.cell_size + self.left + 2, (y + 1) * self.cell_size + self.top - 2), 2)
+                    pygame.draw.circle(screen, Color('blue'), (x * self.cell_size + self.left + self.cell_size // 2, y * self.cell_size + self.top + self.cell_size // 2), self.cell_size // 2 - 2)
 
 
     def get_cell(self, mouse_pos):
@@ -39,9 +39,12 @@ class Board:
             self.on_click(cell)
 
     def on_click(self, cell):
-        if self.board[cell[0]][cell[1]] == 0:
-            self.board[cell[0]][cell[1]] = self.t
-        self.t = 1 if self.t == 2 else 2
+        if self.board[cell[0]][cell[1]] in (self.t, 0):
+            for i in range(self.width):
+                self.board[i][cell[1]] = self.t
+            for i in range(self.height):
+                self.board[cell[0]][i] = self.t
+            self.t = 1 if self.t == 2 else 2
 
 if __name__ == '__main__':
     pygame.init()
