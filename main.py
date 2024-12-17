@@ -1,8 +1,9 @@
 import pygame
 from pygame import Color
 import pprint
+
+
 class Board:
-    # создание поля
     def __init__(self, width, height):
         self.do_click = True
         self.run = False
@@ -17,6 +18,7 @@ class Board:
         self.left = left
         self.top = top
         self.cell_size = cell_size
+
     def render(self, screen):
         for y in range(self.height):
             for x in range(self.width):
@@ -27,11 +29,13 @@ class Board:
                     r = 1
                     c = Color('White')
                 pygame.draw.rect(screen, c, (x * self.cell_size + self.left, y * self.cell_size + self.top, self.cell_size, self.cell_size), r)
+
     def get_cell(self, mouse_pos):
         pos = ((mouse_pos[0] - self.left) // self.cell_size, (mouse_pos[1] - self.top) // self.cell_size)
         if pos[0] <= self.width - 1 and pos[1] <= self.height - 1:
             return pos
         return None
+
     def get_click(self, mouse_pos):
         if self.do_click:
             cell = self.get_cell(mouse_pos)
@@ -69,6 +73,7 @@ class Board:
         past_board.pop(0)
         if past_board == board.board:
             self.stop()
+
 if __name__ == '__main__':
     fps = 3
     v = 1
