@@ -32,18 +32,21 @@ if __name__ == '__main__':
     sprite.image = load_image("arrow.png")
     sprite.rect = sprite.image.get_rect()
     all_sprites.add(sprite)
-    pygame.mouse.set_visible(False)
+    point = (1, 1)
+    pygame.mouse.set_visible(True)
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEMOTION:
-                if pygame.mouse.get_focused():
-                    if (0 <= event.pos[0] <= width) and (0 <= event.pos[1] <= height):
-                        sprite.rect.x = event.pos[0]
-                        sprite.rect.y = event.pos[1]
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if (0 <= event.pos[0] <= width) and (0 <= event.pos[1] <= height):
+                    point = event.pos
+
+        sprite.rect.x += (-1 if (point[0] - sprite.rect.x) < 0 else 1) * 10
+        sprite.rect.y += (-1 if (point[1] - sprite.rect.y) < 0 else 1) * 10
         all_sprites.draw(screen)
         pygame.display.flip()
         screen.fill((0, 0, 0))
+        clock
     pygame.display.flip()
