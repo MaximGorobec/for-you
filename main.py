@@ -5,7 +5,7 @@ import random
 from pygame import Color
 
 
-def load_image(name, colorkey=Color('white')):
+def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
@@ -15,7 +15,7 @@ def load_image(name, colorkey=Color('white')):
     if colorkey is not None:
         image = image.convert()
         if colorkey == -1:
-            colorkey = image.get_at((0, 0))
+            colorkey = image.get_at((1, 1))
         image.set_colorkey(colorkey)
     else:
         image = image.convert_alpha()
@@ -24,21 +24,21 @@ def load_image(name, colorkey=Color('white')):
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('shaders')
-    size = width, height = 800, 400
+    size = width, height = 600, 95
     screen = pygame.display.set_mode(size)
     running = True
 
     all_sprites = pygame.sprite.Group()
     sprite = pygame.sprite.Sprite()
-    sprite.image = load_image("hero.png")
+    sprite.image = load_image("car.png")
     sprite.rect = sprite.image.get_rect()
     all_sprites.add(sprite)
     clock = pygame.time.Clock()
     point = (1, 1)
     screen.fill((255, 255, 255))
-
+    v = 1
     pygame.mouse.set_visible(True)
-
+    sprite.image = pygame.transform.flip(sprite.image, 1, 0)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -46,12 +46,15 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if (0 <= event.pos[0] <= width) and (0 <= event.pos[1] <= height):
                     point = event.pos
-        if random.choice((1, 0)):
-            sprite.rect.x += (-1 if (point[0] - sprite.rect.x) < 0 else 1) * 10
-        else:
-            sprite.rect.y += (-1 if (point[1] - sprite.rect.y) < 0 else 1) * 10
+        if sprite.rect.collidepoint((0, 0)) :
+            sprite.image = pygame.transform.flip(sprite.image, 1, 0)
+            v = 1
+        elif sprite.rect.collidepoint((width, 0)):
+            sprite.image = pygame.transform.flip(sprite.image, 1, 0)
+            v = -1
+        sprite.rect.x += v
         all_sprites.draw(screen)
         pygame.display.flip()
         screen.fill((255, 255, 255))
-        clock.tick(1)
+        clock.tick(20)
     pygame.display.flip()
