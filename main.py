@@ -2,9 +2,10 @@ import pygame
 import os
 import sys
 import random
+from pygame import Color
 
 
-def load_image(name, colorkey=None):
+def load_image(name, colorkey=Color('white')):
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
@@ -29,10 +30,13 @@ if __name__ == '__main__':
 
     all_sprites = pygame.sprite.Group()
     sprite = pygame.sprite.Sprite()
-    sprite.image = load_image("arrow.png")
+    sprite.image = load_image("hero.png")
     sprite.rect = sprite.image.get_rect()
     all_sprites.add(sprite)
+    clock = pygame.time.Clock()
     point = (1, 1)
+    screen.fill((255, 255, 255))
+
     pygame.mouse.set_visible(True)
 
     while running:
@@ -42,11 +46,12 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if (0 <= event.pos[0] <= width) and (0 <= event.pos[1] <= height):
                     point = event.pos
-
-        sprite.rect.x += (-1 if (point[0] - sprite.rect.x) < 0 else 1) * 10
-        sprite.rect.y += (-1 if (point[1] - sprite.rect.y) < 0 else 1) * 10
+        if random.choice((1, 0)):
+            sprite.rect.x += (-1 if (point[0] - sprite.rect.x) < 0 else 1) * 10
+        else:
+            sprite.rect.y += (-1 if (point[1] - sprite.rect.y) < 0 else 1) * 10
         all_sprites.draw(screen)
         pygame.display.flip()
-        screen.fill((0, 0, 0))
-        clock
+        screen.fill((255, 255, 255))
+        clock.tick(1)
     pygame.display.flip()
