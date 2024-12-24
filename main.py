@@ -18,15 +18,18 @@ def load_image(name, colorkey=None):
     return image
 
 class Bomb(pygame.sprite.Sprite):
-    image = load_image("bomb.png")
+    image = load_image("bomb2.png")
     image_boom = load_image("boom.png")
 
     def __init__(self, group):
-        super().__init__(group)
         self.image = Bomb.image
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(screen.get_width() - self.image.get_width())
         self.rect.y = random.randrange(screen.get_height() - self.image.get_height())
+        while pygame.sprite.spritecollideany(self, group):
+            self.rect.x = random.randrange(screen.get_width() - self.image.get_width())
+            self.rect.y = random.randrange(screen.get_height() - self.image.get_height())
+        super().__init__(group)
 
     def update(self, *args):
         if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
@@ -37,7 +40,7 @@ class Bomb(pygame.sprite.Sprite):
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('shaders')
-    size = width, height = 500, 500
+    size = width, height = 1000, 1000
     screen = pygame.display.set_mode(size)
     running = True
 
