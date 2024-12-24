@@ -3,8 +3,6 @@ import os
 import sys
 import random
 from pygame import Color
-
-
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
@@ -17,44 +15,47 @@ def load_image(name, colorkey=None):
         if colorkey == -1:
             colorkey = image.get_at((1, 1))
         image.set_colorkey(colorkey)
-    else:
-        image = image.convert_alpha()
     return image
+
+class Bomb(pygame.sprite.Sprite):
+    image = load_image("bomb.png")
+    image_boom = load_image("boom.png")
+
+    def __init__(self, group):
+        super().__init__(group)
+        self.image = Bomb.image
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(screen.get_width() - self.image.get_width())
+        self.rect.y = random.randrange(screen.get_height() - self.image.get_height())
+
+    def update(self, *args):
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            self.image = self.image_boom
+
 
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('shaders')
-    size = width, height = 600, 95
+    size = width, height = 500, 500
     screen = pygame.display.set_mode(size)
     running = True
 
     all_sprites = pygame.sprite.Group()
-    sprite = pygame.sprite.Sprite()
-    sprite.image = load_image("car.png")
-    sprite.rect = sprite.image.get_rect()
-    all_sprites.add(sprite)
+    for _ in range(20):
+        Bomb(all_sprites)
+
     clock = pygame.time.Clock()
-    point = (1, 1)
-    screen.fill((255, 255, 255))
-    v = 1
     pygame.mouse.set_visible(True)
-    sprite.image = pygame.transform.flip(sprite.image, 1, 0)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if (0 <= event.pos[0] <= width) and (0 <= event.pos[1] <= height):
-                    point = event.pos
-        if sprite.rect.collidepoint((0, 0)) :
-            sprite.image = pygame.transform.flip(sprite.image, 1, 0)
-            v = 1
-        elif sprite.rect.collidepoint((width, 0)):
-            sprite.image = pygame.transform.flip(sprite.image, 1, 0)
-            v = -1
-        sprite.rect.x += v
+                for bomb in all_sprites:
+                    bomb.update(event)
         all_sprites.draw(screen)
         pygame.display.flip()
-        screen.fill((255, 255, 255))
+        screen.fill((0, 0, 0))
         clock.tick(20)
     pygame.display.flip()
