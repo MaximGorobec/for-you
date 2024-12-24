@@ -17,67 +17,61 @@ def load_image(name, colorkey=None):
         image.set_colorkey(colorkey)
     return image
 
-class Border(pygame.sprite.Sprite):
-    # строго вертикальный или строго горизонтальный отрезок
-    def __init__(self, x1, y1, x2, y2):
+class Mountain(pygame.sprite.Sprite):
+    image = load_image("mountains.png")
+
+    def __init__(self):
         super().__init__(all_sprites)
-        if x1 == x2:  # вертикальная стенка
-            self.add(vertical_borders)
-            self.image = pygame.Surface([1, y2 - y1])
-            self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
-        else:  # горизонтальная стенка
-            self.add(horizontal_borders)
-            self.image = pygame.Surface([x2 - x1, 1])
-            self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
-class Ball(pygame.sprite.Sprite):
-    def __init__(self, radius, x, y):
+        self.image = Mountain.image
+        self.rect = self.image.get_rect()
+        # вычисляем маску для эффективного сравнения
+        self.mask = pygame.mask.from_surface(self.image)
+        # располагаем горы внизу
+        self.rect.bottom = height
+class Landing(pygame.sprite.Sprite):
+    image = load_image("pt.png")
+
+    def __init__(self, pos):
         super().__init__(all_sprites)
-        self.radius = radius
-        self.image = pygame.Surface((2 * radius, 2 * radius),
-                                    pygame.SRCALPHA, 32)
-        pygame.draw.circle(self.image, pygame.Color("red"),
-                           (radius, radius), radius)
-        self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
-        self.vx = random.randint(-5, 5)
-        self.vy = random.randrange(-5, 5)
+        self.image = Landing.image
+        self.rect = self.image.get_rect()
+        # вычисляем маску для эффективного сравнения
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
 
     def update(self):
-        self.rect = self.rect.move(self.vx, self.vy)
-        if pygame.sprite.spritecollideany(self, horizontal_borders):
-            self.vy = -self.vy
-        if pygame.sprite.spritecollideany(self, vertical_borders):
-            self.vx = -self.vx
+        if not pygame.sprite.collide_mask(self, mountain):
+            self.rect = self.rect.move(0, 1)
 
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('shaders')
-    size = width, height = 500, 500
+
+    size = width, height = 789, 500
     screen = pygame.display.set_mode(size)
-    running = True
 
     all_sprites = pygame.sprite.Group()
 
-
-    horizontal_borders = pygame.sprite.Group()
-    vertical_borders = pygame.sprite.Group()
-
-    Border(5, 5, width - 5, 5)
-    Border(5, height - 5, width - 5, height - 5)
-    Border(5, 5, 5, height - 5)
-    Border(width - 5, 5, width - 5, height - 5)
-
-    for i in range(10):
-        Ball(20, 100, 100)
-
     clock = pygame.time.Clock()
     pygame.mouse.set_visible(True)
+    running = True
+
+
+    mountain = Mountain()
+
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                Landing(event.pos)
+
+
         all_sprites.update()
         all_sprites.draw(screen)
         pygame.display.flip()
-        screen.fill((255, 255, 255))
-        clock.tick(20)
+        screen.fill((0, 0, 0))
+        clock.tick(100000)
     pygame.display.flip()
