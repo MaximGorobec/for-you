@@ -60,7 +60,6 @@ class Player(pygame.sprite.Sprite):
         self.pos = pos_x, pos_y
         self.rect = self.image.get_rect().move(
             tile_width * pos_x + 15, tile_height * pos_y + 5)
-        print(1)
 
     def move(self, x, y):
         return self.__init__(x, y)
@@ -117,8 +116,14 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
     running = True
     start_screen()
-    level_map = load_level('map.txt')
-    player, level_x, level_y = generate_level(load_level('map.txt'))
+    screen.fill((0, 0, 0))
+    pygame.display.flip()
+    map_name = input()
+    if not os.path.exists('data/' + map_name):
+        print('не тот файл')
+        exit()
+    level_map = load_level(map_name)
+    player, level_x, level_y = generate_level(load_level(map_name))
     while running:
         x, y = player.pos
         for event in pygame.event.get():
@@ -141,4 +146,4 @@ if __name__ == '__main__':
         player_group.draw(screen)
         pygame.display.flip()
         screen.fill((0, 0, 0))
-
+exit()
