@@ -1,30 +1,12 @@
-import pygame
-import sys
-import os
+import pygame, sys, os
+
 FPS = 50
+player = None
 
-def terminate():
-    pygame.quit()
-    sys.exit()
-
-def start_screen():
-    intro_text = ["ЗАСТАВКА", "",
-                  "Правила игры",
-                  "Если в правилах несколько строк,",
-                  "приходится выводить их построчно"]
-
-def load_level(filename):
-    filename = "data/" + filename
-    # читаем уровень, убирая символы перевода строки
-    with open(filename, 'r') as mapFile:
-        level_map = [line.strip() for line in mapFile]
-
-    # и подсчитываем максимальную длину
-    max_width = max(map(len, level_map))
-
-    # дополняем каждую строку пустыми клетками ('.')
-    return list(map(lambda x: x.ljust(max_width, '.'), level_map))
-
+# группы спрайтов
+all_sprites = pygame.sprite.Group()
+tiles_group = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
@@ -38,11 +20,6 @@ def load_image(name, colorkey=None):
             colorkey = image.get_at((1, 1))
         image.set_colorkey(colorkey)
     return image
-
-player = None
-all_sprites = pygame.sprite.Group()
-tiles_group = pygame.sprite.Group()
-player_group = pygame.sprite.Group()
 
 def generate_level(level):
     new_player, x, y = None, None, None
@@ -67,6 +44,7 @@ player_image = load_image('mario.png')
 
 tile_width = tile_height = 50
 
+
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(tiles_group, all_sprites)
@@ -74,38 +52,93 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
         self.image = player_image
+        self.pos = pos_x, pos_y
         self.rect = self.image.get_rect().move(
             tile_width * pos_x + 15, tile_height * pos_y + 5)
+        print(1)
 
-if __name__ == '__main__':
-    pygame.init()
-    pygame.display.set_caption('shaders')
-    size = width, height = pygame.image.load('data/fon.jpg').get_size()
-    screen = pygame.display.set_mode(size)
-    running = True
+    def move(self, x, y):
+        return self.__init__(x, y)
 
-    all_sprites = pygame.sprite.Group()
-    clock = pygame.time.Clock()
-    pygame.mouse.set_visible(True)
-    fon = pygame.transform.scale(load_image('fon.jpg'), size)
+def load_level(filename):
+    filename = "data/" + filename
+    # читаем уровень, убирая символы перевода строки
+    with open(filename, 'r') as mapFile:
+        level_map = [line.strip() for line in mapFile]
+
+    # и подсчитываем максимальную длину
+    max_width = max(map(len, level_map))
+
+    # дополняем каждую строку пустыми клетками ('.')
+    return list(map(lambda x: x.ljust(max_width, '.'), level_map))
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+def start_screen():
+    intro_text = ["ЗАСТАВКА", "",
+                  "Правила игры",
+                  "Если в правилах несколько строк,",
+                  "приходится выводить их построчно"]
+
+    fon = pygame.transform.scale(load_image('fon.jpg'), (screen.get_width(), screen.get_height()))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
     text_coord = 50
-    start = 0
+    for line in intro_text:
+        string_rendered = font.render(line, 1, pygame.Color('black'))
+        intro_rect = string_rendered.get_rect()
+        text_coord += 10
+        intro_rect.top = text_coord
+        intro_rect.x = 10
+        text_coord += intro_rect.height
+        screen.blit(string_rendered, intro_rect)
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                start = 1
-
-        if start:
-            player, level_x, level_y = generate_level(load_level('map.txt'))
-        else:
-            screen.blit(pygame.image.load('data/fon.jpg').convert(), (0, 0))
+            elif event.type == pygame.KEYDOWN or \
+                    event.type == pygame.MOUSEBUTTONDOWN:
+                return  # начинаем игру
         pygame.display.flip()
         clock.tick(FPS)
+if __name__ == '__main__':
+    clock = pygame.time.Clock()
+    pygame.init()
+    pygame.display.set_caption('mario')
+    size = width, height = 1024, 800
+    screen = pygame.display.set_mode(size)
+    running = True
+    start_screen()
+    level_map = load_level('map.txt')
+    player, level_x, level_y = generate_level(load_level('map.txt'))
+    while running:
+        x, y = player.pos
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                vec = x, y
+                if event.key == pygame.K_w:
+                    vec = x, y - 1
+                if event.key == pygame.K_a:
+                    vec = x - 1, y
+                if event.key == pygame.K_s:
+                    vec = x, y + 1
+                if event.key == pygame.K_d:
+                    vec = x + 1, y
+                if level_map[vec[0]][vec[1]] in '.@':
+                    player.move(vec[0], vec[1])
+        all_sprites.draw(screen)
+        tiles_group.draw(screen)
+        player_group.draw(screen)
+        pygame.display.flip()
+        screen.fill((0, 0, 0))
+
